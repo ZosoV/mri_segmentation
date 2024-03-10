@@ -24,11 +24,16 @@ Idea for the report
 
 
 Present results on time, dice or jaccard, confussion matrix, AUC and RUC if possible. Check it later
+- Drive decision based on Jaccard Index, and keep other as alternatives
+- [ ] leer como mismo se lidia con unbalance data precision or recall is important?
+- [ ] leer que conchas era AUC and ROC estan relacionados
+
+- Add a short mention of data exploration with the normalization step and the histogram view of overlapping frequencies
 
 For the second questions, four algorithms
-1. Only otsu + two pass algorithm + k-means
-2. Adding convex hull (to focus on the accuracy of the internal region)
-3. Deal with the overlapping section between label 1, 2 and 3
+1. Only otsu + two pass algorithm + k-means 92 
+2. Adding convex hull (to focus on the accuracy of the internal region) 93
+3. Deal with the overlapping section between label 1, 2 and 3 94
 4. Check the posibility of improving the coverage of the internal region with edges
 instead of convex hull (inversing the found edge)
 
@@ -39,5 +44,10 @@ For the thrid algorithm,
     - Explain why that works in 3D too.
 2. Try fussion channel ideas (or put as future works)
     - In order to leverage the information from different channels
+    - Simple function technique get the edge on each channel
+    - sum all the channels together each channel with a weight 
+        - the weight is assigned with a normal distribution in the current center in the current position
+        - if your are getting the weight of the channel 5 (the other parts) around will be weighted with less values progressively (given more priority to the current one)
+        - I think we can do this with a matrix multiplication that is not too expensive
 
 
