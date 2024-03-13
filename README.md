@@ -47,6 +47,7 @@ For the thrid algorithm,
     - Avoid to use otsu by setting a fixed threshold at hand (maybe)
     - The two-pass labelling algorithm is expensive (instead try one-pass algorithm)
     - Explain why that works in 3D too.
+    - Creo que tambien es possible con un edge detector to extra the inner region (WORK IN THAT IDEA IF YOU HAVE TIME)
 2. Try fussion channel ideas (or put as future works)
     - In order to leverage the information from different channels
     - Simple function technique get the edge on each channel

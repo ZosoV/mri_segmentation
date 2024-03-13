@@ -34,11 +34,13 @@ def plot_frequencies(reference_img, reference_labels, labels2plot = list(range(6
     # Show the plot
     plt.show()
 
-def plot_masks(temporal_masks, rows=1, cols=2):
+def plot_masks(temporal_masks, rows=1, cols=2, slice_id = None):
     fig, axes = plt.subplots(rows, cols, figsize=(12, 6))
 
     flatten_axes = axes.flat
     for ax, (key, mask) in zip(flatten_axes, temporal_masks.items()):
+        if slice_id is not None:
+            mask = mask[:,:,slice_id]
         ax.imshow(mask, cmap='gray')
         ax.set_title(f'Mask: {key}')
         ax.axis('off')
@@ -46,12 +48,17 @@ def plot_masks(temporal_masks, rows=1, cols=2):
     plt.tight_layout()
     plt.show()
 
-def temporal_masks2final_segmented_mask(temporal_masks, labels = range(6)):
-    segmented_labels = np.zeros_like(temporal_masks["0"])
+def temporal_masks2final_segmented_mask(temporal_masks, labels = range(6), slice_id = None):
+    if slice_id is not None:
+        segmented_labels = np.zeros_like(temporal_masks["0"][:,:,0])
+    else:
+        segmented_labels = np.zeros_like(temporal_masks["0"])
 
     # Accumulate all the temporal masks in the segmented_labels
     for label in labels:
         mask = temporal_masks[str(label)]
+        if slice_id is not None:
+            mask = mask[:,:,slice_id]
         segmented_labels[mask == 1] = label
 
     return segmented_labels
