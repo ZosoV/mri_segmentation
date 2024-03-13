@@ -2,6 +2,11 @@
 
 ### TODOs
 
+IMPORTANT: DON'T FORGET TO MENTION HOW TO SET THE LABELS WHEN USING K-MEANS USING THE ORDER OF THE CENTROIDS
+
+IDEA: si me da chance trata de fusionar las regiones internas pero las mascaras aplicadas
+con un weighted average q priorize a la cara actual (O escribirlo como PROPUESTA DE FUTUROS TRABAJOS) ESO DEBERIA SER EL EXPERIMENTO 3 DE 3D
+
 - [ ] Review ways to test the algorithm
 - [ ] Try to improve a little bit the algorithm
 - [ ] Make a table with the changes sometimes.
