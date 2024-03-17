@@ -1,11 +1,22 @@
 import numpy as np
 import matplotlib.pyplot as plt
-from sklearn.cluster import KMeans
+from sklearn.cluster import KMeans, MiniBatchKMeans
 from sklearn.metrics import jaccard_score, f1_score, confusion_matrix, accuracy_score, precision_score, recall_score
 from sklearn.preprocessing import label_binarize
 from sklearn.metrics import precision_recall_curve, auc, roc_auc_score, average_precision_score
+from skimage.segmentation import watershed
 
-def plot_frequencies(reference_img, reference_labels, labels2plot = list(range(6))):
+
+def plot_histogram(image, mask, title = 'Histogram of Image'):
+    pixels = image[mask == 1]
+
+    plt.hist(pixels.flatten(), bins=100, alpha=0.5)
+    plt.title(title)
+    plt.xlabel('Pixel Intensity')
+    plt.ylabel('Frequency')
+    plt.show()
+
+def plot_frequencies(reference_img, reference_labels, labels2plot = list(range(6)), title = "'Histogram of Reference Image by Label'"):
 
     label_names = ['air', 'skin/scalp', 'skull', 'CSF', 'Gray Matter', 'White Matter']
 
@@ -27,7 +38,7 @@ def plot_frequencies(reference_img, reference_labels, labels2plot = list(range(6
     plt.legend()
 
     # Set the title and labels
-    plt.title('Histogram of Reference Image by Label')
+    plt.title(title)
     plt.xlabel('Pixel Intensity')
     plt.ylabel('Frequency')
 
@@ -35,7 +46,10 @@ def plot_frequencies(reference_img, reference_labels, labels2plot = list(range(6
     plt.show()
 
 def plot_masks(temporal_masks, rows=1, cols=2, slice_id = None):
+
     fig, axes = plt.subplots(rows, cols, figsize=(12, 6))
+
+    fig.suptitle('Temporal Masks')
 
     flatten_axes = axes.flat
     for ax, (key, mask) in zip(flatten_axes, temporal_masks.items()):
@@ -62,6 +76,27 @@ def temporal_masks2final_segmented_mask(temporal_masks, labels = range(6), slice
         segmented_labels[mask == 1] = label
 
     return segmented_labels
+
+def mini_batch_kmeans_segmentation(image, n_clusters=4):
+    # Reshape the image to a 2D array
+    X = image.reshape(-1, 1)
+
+    # Fit MiniBatchKMeans to the data
+    kmeans = MiniBatchKMeans(n_clusters=n_clusters, random_state=0).fit(X)
+
+    # Predict the labels for the data
+    labels = kmeans.predict(X)
+
+    # Reshape the labels to the original image shape
+    labels = labels.reshape(image.shape)
+
+    # Get the centroids of the clusters
+    centroids = kmeans.cluster_centers_
+
+    # Order the centroids and return the indices
+    order = np.argsort(centroids, axis=0)
+
+    return labels, order
 
 def kmeans_segmentation(image, n_clusters=4):
     # Reshape the image to a 2D array
@@ -285,4 +320,42 @@ def plot_confusion_matrix(y_true, y_pred):
     ax.set_yticklabels(label_names)
 
     # Show the plot
+    plt.show()
+
+def plot_temporal_masks_by_keys(temporal_masks, keys, title, isPlot = True):
+    tmp_mask = np.zeros_like(temporal_masks["0"])
+    idx = 0
+    for key in keys:
+        mask = temporal_masks[key]
+        tmp_mask[mask == 1] = idx
+        idx += 1
+
+    if isPlot:
+        plt.imshow(tmp_mask)
+        plt.axis('off')
+        plt.title(title)
+
+    return tmp_mask
+
+# Create a function to plot images next to each other given a list of images
+def plot_images(images, titles, cmaps = None):
+    if cmaps is None:
+        cmaps = ['gray'] * len(images)
+    fig, axes = plt.subplots(1, len(images), figsize=(10, 10))
+    for i, (image, title, cmap) in enumerate(zip(images, titles, cmaps)):
+        axes[i].imshow(image, cmap=cmap)
+        axes[i].set_title(title)
+        axes[i].axis('off')
+    plt.show()
+
+def plot_segmented_regions(reference_img, reference_labels):
+    fig, axes = plt.subplots(2, 3, figsize=(10, 6))
+
+    for i, ax in enumerate(axes.flat):
+        mask = reference_img * (reference_labels == i)
+        ax.imshow(mask.reshape(reference_img.shape), cmap='gray')
+        ax.set_title(f'Image Region for Label {i}')
+        ax.axis('off')
+
+    plt.tight_layout()
     plt.show()

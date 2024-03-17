@@ -24,3 +24,8 @@ Handling class imbalance: In imbalanced datasets, where some classes have much f
 
 In summary, micro-averaged metrics naturally take into account the class distribution of the dataset, making them particularly useful for evaluating models on imbalanced datasets. They focus on the overall performance across all classes, giving a more comprehensive view of the model's ability to predict all classes correctly.
 
+
+# NOTE:
+Connected Component Labeling (CCL) is a technique used in computer vision to detect connected regions in binary digital images. Here are some popular CCL algorithms:
+
+Two-Pass Algorithm: This is the most common CCL algorithm. It scans the image twice. In the first pass, it assigns temporary labels and records equivalences. In the second pass, it replaces each temporary label by the label of its equivalence class.
